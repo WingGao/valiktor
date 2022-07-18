@@ -166,9 +166,9 @@ subprojects {
         }
     }
 
-    afterEvaluate {
-        signing {
-            sign(publishing.publications["mavenJava"])
-        }
-    }
+//    afterEvaluate {
+//        signing {
+//            sign(publishing.publications["mavenJava"])
+//        }
+//    }
 }
