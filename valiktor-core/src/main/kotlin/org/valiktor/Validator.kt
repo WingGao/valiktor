@@ -16,7 +16,9 @@
 
 package org.valiktor
 
+import io.swagger.annotations.ApiModelProperty
 import kotlin.reflect.KProperty1
+import kotlin.reflect.jvm.javaField
 
 /**
  * Validate an object
@@ -111,8 +113,19 @@ open class Validator<E>(private val obj: E) {
         fun validate(constraint: (T?) -> Constraint, isValid: (T?) -> Boolean): Property<T> {
             val value = this.property.get(this.obj)
             if (!isValid(value)) {
+                // 判断swagger
+                var propertyName = this.property.name
+                val apiModelProperty = this.property.javaField?.annotations?.find {
+                    it.annotationClass == ApiModelProperty::class
+                } as ApiModelProperty?
+                if (apiModelProperty != null) {
+                    val mName = apiModelProperty.name
+                    val mVal = apiModelProperty.value
+                    if (!mName.isNullOrBlank()) propertyName = mName
+                    else if (!mVal.isNullOrBlank()) propertyName = mVal
+                }
                 this@Validator.constraintViolations += DefaultConstraintViolation(
-                    property = this.property.name,
+                    property = propertyName,
                     value = value,
                     constraint = constraint(value)
                 )

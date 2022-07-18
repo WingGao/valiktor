@@ -16,6 +16,7 @@
 
 package org.valiktor.functions
 
+import io.swagger.annotations.ApiModelProperty
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
@@ -47,7 +48,9 @@ private object AnyFunctionsFixture {
         val id: Int? = null,
         val name: String? = null,
         val company: Company? = null,
-        val address: Address? = null
+        val address: Address? = null,
+        @ApiModelProperty("swagger属性")
+        var swaggerProp: Int? = null
     )
 
     data class Company(val id: Int? = null)
@@ -59,6 +62,12 @@ private object AnyFunctionsFixture {
 
 @ExperimentalCoroutinesApi
 class AnyFunctionsTest {
+    @Test
+    fun swaggerPropValid() {
+        validate(Employee()) {
+            validate(Employee::swaggerProp).isNotNull()
+        }
+    }
 
     @Test
     fun `isNull with null property should be valid`() {
